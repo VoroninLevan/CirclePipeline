@@ -113,6 +113,9 @@ workflows:
           requires:
             - test
       - deploy-prod:
+          filters:
+              branches:
+                only: master
           type: approval
           requires:
             - test
