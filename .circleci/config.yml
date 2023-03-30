@@ -2,9 +2,6 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-orbs:
-  snyk: snyk/snyk@1.5.0
-
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -42,14 +39,54 @@ jobs:
           when: always
       - store_test_results:
           path: ~/test-results
+  test-api:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: QA API test
+          command: "echo Running API tests"
   scan:
     docker:
       - image: cimg/openjdk:11.0
     steps:
-      - checkout
+      #- checkout
       - run:
           name: Source Scan
           command: "echo Scanning Source Code"
+  deploy-qa:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: Deploy on QA
+          command: Deploying on QA
+  deploy-dev:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: Deploy on DEV
+          command: Deploying on DEV
+  deploy-pre-prod:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: Deploy on PRE-PROD
+          command: Deploying on PRE-PROD
+  deploy-prod:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: Deploy on PROD
+          command: Deploying on PROD
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -63,3 +100,22 @@ workflows:
           requires:
             - build
             - scan
+      - deploy-qa:
+          type: approval
+          requires:
+            - test
+      - deploy-dev:
+          type: approval
+          requires:
+            - test
+      - deploy-pre-prod:
+          type: approval
+          requires:
+            - test
+      - deploy-prod:
+          type: approval
+          requires:
+            - test
+      - test-api:
+          requires:
+            - deploy-qa
