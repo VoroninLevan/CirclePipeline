@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs:
+  snyk: snyk/snyk@1.5.0
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -39,7 +42,13 @@ jobs:
           when: always
       - store_test_results:
           path: ~/test-results
-
+  scan:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      - checkout
+      - run: npm ci
+      - snyk/scan
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -48,6 +57,8 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build
+      - scan
       - test:
           requires:
             - build
+            - scan
