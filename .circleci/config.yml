@@ -105,10 +105,16 @@ workflows:
           requires:
             - test
       - deploy-dev:
+          filters:
+              branches:
+                only: dev
           type: approval
           requires:
             - test
       - deploy-pre-prod:
+          filters:
+              branches:
+                only: stage
           type: approval
           requires:
             - test
@@ -116,6 +122,8 @@ workflows:
           filters:
               branches:
                 only: master
+              tags:
+                only: /^v*/
           type: approval
           requires:
             - test
