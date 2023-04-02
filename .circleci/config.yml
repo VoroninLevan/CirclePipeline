@@ -130,7 +130,6 @@ workflows:
                 only: master
               tags:
                 only: /^v*/
-          type: approval
           requires:
             - test-api
       - test-api:
