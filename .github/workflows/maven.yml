@@ -93,6 +93,8 @@ jobs:
     - uses: actions/setup-java@v3
       with:
         java-version: '11'
+        distribution: 'temurin'
+        cache: maven
     - run: mvn -B package --file pom.xml -DskipTests
     - run: mkdir prod && cp target/*jar-with-dependencies.jar staging
     - uses: actions/upload-artifact@v3
