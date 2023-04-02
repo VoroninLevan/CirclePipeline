@@ -89,18 +89,6 @@ jobs:
     steps:
     - name: Deploy on PROD
       run: echo Deploying a package over to prod environment
-    - uses: actions/checkout@v3
-    - uses: actions/setup-java@v3
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: maven
-    - run: mvn -B package --file pom.xml -DskipTests
-    - run: mkdir prod && cp target/*jar-with-dependencies.jar staging
-    - uses: actions/upload-artifact@v3
-      with:
-        name: Package
-        path: prod
       
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     #- name: Update dependency graph
