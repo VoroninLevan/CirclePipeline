@@ -78,6 +78,7 @@ jobs:
           name: Deploy on PRE-PROD
           command: "echo Deploying on PRE-PROD"
   deploy-prod:
+    working_directory: /tmp
     docker:
       - image: cimg/openjdk:11.0
     steps:
@@ -85,7 +86,17 @@ jobs:
       - run:
           name: Deploy on PROD
           command: "echo Deploying on PROD"
-
+      - run:
+          name: Creating Dummy Artifacts
+          command: |
+            echo "my artifact file" > /tmp/art-1;
+            mkdir /tmp/artifacts;
+            echo "my artifact files in a dir" > /tmp/artifacts/art-2;
+      - store_artifacts:
+          path: /tmp/art-1
+          destination: artifact-file
+      - store_artifacts:
+          path: /tmp/artifacts
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
