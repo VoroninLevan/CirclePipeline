@@ -62,7 +62,7 @@ jobs:
       #- checkout
       - run:
           name: Deploy on QA
-          command: Deploying on QA
+          command: "echo Deploying on QA"
   deploy-dev:
     docker:
       - image: cimg/openjdk:11.0
@@ -70,7 +70,7 @@ jobs:
       #- checkout
       - run:
           name: Deploy on DEV
-          command: Deploying on DEV
+          command: "echo Deploying on DEV"
   deploy-pre-prod:
     docker:
       - image: cimg/openjdk:11.0
@@ -78,7 +78,7 @@ jobs:
       #- checkout
       - run:
           name: Deploy on PRE-PROD
-          command: Deploying on PRE-PROD
+          command: "echo Deploying on PRE-PROD"
   deploy-prod:
     docker:
       - image: cimg/openjdk:11.0
@@ -86,7 +86,7 @@ jobs:
       #- checkout
       - run:
           name: Deploy on PROD
-          command: Deploying on PROD
+          command: "echo Deploying on PROD"
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
