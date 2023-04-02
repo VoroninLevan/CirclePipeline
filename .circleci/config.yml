@@ -15,12 +15,6 @@ jobs:
       - run:
           name: Build
           command: mvn -B -DskipTests clean package
-      - run:
-          name: Install
-          command: mvn clean install
-      - run:
-          name: Scan
-          command: mvn snyk:test
   test:
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
@@ -59,8 +53,11 @@ jobs:
     steps:
       #- checkout
       - run:
-          name: Source code Scan
-          command: "echo Source code scan"
+          name: Install
+          command: mvn clean install
+      - run:
+          name: Scan
+          command: mvn snyk:test
   deploy-qa:
     docker:
       - image: cimg/openjdk:11.0
