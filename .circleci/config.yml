@@ -7,7 +7,7 @@ version: 2.1
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   # Build Job
-  build:
+  build_scan:
     docker:
       - image: cimg/openjdk:11.0
     steps:
@@ -53,14 +53,6 @@ jobs:
       - run:
           name: QA API test
           command: "echo Running API tests"
-  scan:
-    docker:
-      - image: cimg/openjdk:11.0
-    steps:
-      #- checkout
-      - run:
-          name: Source code Scan
-          command: "echo Source code scan"
   deploy-qa:
     docker:
       - image: cimg/openjdk:11.0
@@ -69,6 +61,11 @@ jobs:
       - run:
           name: Deploy on QA
           command: "echo Deploying on QA"
+      - run:
+          name: Install jFrog CLI
+          command: curl -fL https://getcli.jfrog.io | sh
+
+
   deploy-dev:
     docker:
       - image: cimg/openjdk:11.0
@@ -100,12 +97,10 @@ workflows:
   sample_pipeline: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build
-      - scan
+      - build_scan
       - test:
           requires:
-            - build
-            - scan
+            - build_scan
       - deploy-qa:
           requires:
             - test
