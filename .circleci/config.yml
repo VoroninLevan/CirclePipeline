@@ -53,6 +53,22 @@ jobs:
       - run:
           name: QA API test
           command: "echo Running API tests"
+  test-regression:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: QA API test
+          command: "echo Running Regression tests"
+  test-acceptance:
+    docker:
+      - image: cimg/openjdk:11.0
+    steps:
+      #- checkout
+      - run:
+          name: QA API test
+          command: "echo Running Acceptance tests"
   deploy-qa:
     docker:
       - image: cimg/openjdk:11.0
@@ -107,23 +123,54 @@ workflows:
       - test:
           requires:
             - build_scan
-      - deploy-qa:
+      - deploy-qa-approval:
+          type: approval
           requires:
             - test
+      - deploy-qa:
+          requires:
+            - deploy-qa-approval
+      - deploy-dev-approval:
+          type: approval
+          requires:
+            - test-api
+            - test-regression
+            - test-acceptance
+          filters:
+              branches:
+                only: dev
       - deploy-dev:
           filters:
               branches:
                 only: dev
+          requires:
+            - deploy-dev-approval
+      - deploy-pre-prod-approval:
           type: approval
           requires:
-            - test
+            - test-api
+            - test-regression
+            - test-acceptance
+          filters:
+              branches:
+                only: stage
       - deploy-pre-prod:
           filters:
               branches:
                 only: stage
+          requires:
+            - deploy-pre-prod-approval
+      - deploy-prod-approval:
           type: approval
           requires:
-            - test
+            - test-api
+            - test-regression
+            - test-acceptance
+          filters:
+              branches:
+                only: master
+              tags:
+                only: /^v*/
       - deploy-prod:
           filters:
               branches:
@@ -131,7 +178,13 @@ workflows:
               tags:
                 only: /^v*/
           requires:
-            - test-api
+            - deploy-prod-approval
       - test-api:
+          requires:
+            - deploy-qa
+      - test-regression:
+          requires:
+            - deploy-qa
+      - test-acceptance:
           requires:
             - deploy-qa
