@@ -53,8 +53,8 @@ jobs:
     steps:
       #- checkout
       - run:
-          name: Source Scan
-          command: "echo Scanning Source Code"
+          name: Source code Scan
+          command: mvn snyk:test
   deploy-qa:
     docker:
       - image: cimg/openjdk:11.0
@@ -101,7 +101,6 @@ workflows:
             - build
             - scan
       - deploy-qa:
-          type: approval
           requires:
             - test
       - deploy-dev:
@@ -126,7 +125,7 @@ workflows:
                 only: /^v*/
           type: approval
           requires:
-            - test
+            - test-api
       - test-api:
           requires:
             - deploy-qa
